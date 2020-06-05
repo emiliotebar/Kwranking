@@ -18,6 +18,7 @@ class Keyword(db.Base):
 
     def __str__(self):
         return f'La palabra clave {self.keywords} rankea en la posición {self.posicion}'
+        #return f'{self.keywords}'
 
     def save(self):
         try:
