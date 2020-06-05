@@ -7,6 +7,8 @@
 
 import requests
 from bs4 import BeautifulSoup
+import db
+from models import Keyword
 
 keywords = []
 dominio = "https://j2logo.com/"
@@ -21,19 +23,22 @@ def mostrar_menu():
     print("\n\n")
 
 def carga_keywords():
-    global keywords
     try:
         with open('fichero.txt','r') as fichero:
             for linea in fichero:
-                keywords.append(linea.rstrip('\n'))
+                linea = linea.strip('\n')
+                objKeyword = Keyword(linea)
+                objKeyword.save()
+
         print("Importación correcta")
-        return
+        return Keyword.get_all()
+
     except FileNotFoundError:
         print("No se encuentra el fichero fichero.txt")
     except:
         print("Error en la importación.\nContacte con el departamento de informática.")
 
-def listar_keywords():
+def listar_keywords(keywords):
     contador = 0
     try:
         if keywords:
@@ -97,13 +102,16 @@ def comprueba_keywords(kw, dominio):
     return posicion 
 
 def run():
+
+    keywords = Keyword.get_all()
+
     while True:
         mostrar_menu()
         opcion = input("Introduce una opción:")
         if opcion == "1":
             carga_keywords()
         elif opcion == "2":
-            listar_keywords()
+            listar_keywords(keywords)
         elif opcion == "3":
             keys = input("Introduzca las palabras clave a comprobar > ")
             posicion = comprueba_keywords(keys, dominio)
@@ -119,4 +127,5 @@ def run():
 
 ### INICIO DEL PROGRAMA
 if __name__ == '__main__':
+    db.Base.metadata.create_all(db.engine)
     run()
