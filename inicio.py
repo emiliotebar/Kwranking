@@ -11,7 +11,7 @@ import db
 from models import Keyword
 
 keywords = []
-dominio = "https://j2logo.com/"
+dominio = "https://cookpad.com/"
 dominio_google_search = "https://www.google.com/search?q={kw}&start={start}"
 
 def mostrar_menu():
@@ -101,6 +101,16 @@ def comprueba_keywords(kw, dominio):
 
     return posicion 
 
+def actualiza_posicion(keywords):
+    for key in keywords:
+        posicion = comprueba_keywords(key.keywords, dominio)
+        objKeyword = db.session.query(Keyword).filter_by(keywords=key.keywords).first()
+        objKeyword.posicion = posicion if posicion != 100 else None 
+        objKeyword.save()
+
+def keywords_como_lista_de_valores(keywords):
+    lista_valores = [(key.keywords, key.posicion) for key in keywords]
+
 def run():
 
     keywords = Keyword.get_all()
@@ -113,12 +123,7 @@ def run():
         elif opcion == "2":
             listar_keywords(keywords)
         elif opcion == "3":
-            keys = input("Introduzca las palabras clave a comprobar > ")
-            posicion = comprueba_keywords(keys, dominio)
-            if posicion < 100:
-                print(f'Las keywords {keys} se han encontrado en la posición {posicion} para el dominio {dominio}')
-            else:
-                print(f'De momento, las keywords {keys} no rankean para el dominio {dominio}')
+            actualiza_posicion(keywords)
         elif opcion == "0":
             print("Nos vemos!")
             break
