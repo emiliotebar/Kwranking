@@ -44,7 +44,8 @@ def listar_keywords(keywords):
         if keywords:
             print("LISTADO DE PALABRAS CLAVE")
             for key in keywords:
-                print("{}. {}".format(contador+1 ,key))
+                #print("{}. {}".format(contador+1 ,key))
+                print(f'{contador+1}. KW: {key.keywords} > {key.posicion}')
                 contador += 1
                 if contador % 20 == 0:
                     input("Presione enter para mostrar más palabras clave")
@@ -104,12 +105,12 @@ def comprueba_keywords(kw, dominio):
 def actualiza_posicion(keywords):
     for key in keywords:
         posicion = comprueba_keywords(key.keywords, dominio)
-        objKeyword = db.session.query(Keyword).filter_by(keywords=key.keywords).first()
-        objKeyword.posicion = posicion if posicion != 100 else None 
-        objKeyword.save()
+        key.posicion = posicion if posicion < 100 else None 
+        key.save()
 
 def keywords_como_lista_de_valores(keywords):
     lista_valores = [(key.keywords, key.posicion) for key in keywords]
+    return lista_valores
 
 def run():
 
@@ -119,7 +120,7 @@ def run():
         mostrar_menu()
         opcion = input("Introduce una opción:")
         if opcion == "1":
-            carga_keywords()
+            keywords = carga_keywords()
         elif opcion == "2":
             listar_keywords(keywords)
         elif opcion == "3":
