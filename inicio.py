@@ -9,6 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 import db
 from models import Keyword
+from datos import exportar_resultados_a_xlsx
 
 keywords = []
 dominio = "https://cookpad.com/"
@@ -19,6 +20,7 @@ def mostrar_menu():
     print("\n\n[1] Importar palabras clave")
     print("[2] Mostrar palabras clave")
     print("[3] Comprobar palabras clave")
+    print("[4] Exportar a xlsx")
     print("[0] Salir")
     print("\n\n")
 
@@ -125,6 +127,8 @@ def run():
             listar_keywords(keywords)
         elif opcion == "3":
             actualiza_posicion(keywords)
+        elif opcion == "4":
+            exportar_resultados_a_xlsx(keywords_como_lista_de_valores(keywords))
         elif opcion == "0":
             print("Nos vemos!")
             break
